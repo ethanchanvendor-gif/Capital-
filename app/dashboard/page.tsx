@@ -1,11 +1,17 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { TrendingUp, Wallet, PieChart, Zap } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { TrendingUp, Wallet, PieChart, Zap, ArrowDownLeft, ArrowUpRight } from 'lucide-react'
+import { DepositDialog } from '@/components/defi/deposit-dialog'
+import { WithdrawalDialog } from '@/components/defi/withdrawal-dialog'
 
 export default function DashboardPage() {
+  const [depositOpen, setDepositOpen] = useState(false)
+  const [withdrawalOpen, setWithdrawalOpen] = useState(false)
+
   const stats = [
     {
       title: 'Total Balance',
@@ -157,19 +163,44 @@ export default function DashboardPage() {
               <CardTitle className="text-lg">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <button className="w-full px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition text-sm font-medium">
-                Start Staking
-              </button>
-              <button className="w-full px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary-dark transition text-sm font-medium">
-                Swap Tokens
-              </button>
-              <button className="w-full px-4 py-2 border border-border text-foreground rounded-lg hover:bg-card-light transition text-sm font-medium">
-                View Positions
-              </button>
+              <Button
+                onClick={() => setDepositOpen(true)}
+                className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark"
+              >
+                <ArrowDownLeft className="w-4 h-4" />
+                Deposit
+              </Button>
+              <Button
+                onClick={() => setWithdrawalOpen(true)}
+                className="w-full flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-dark"
+              >
+                <ArrowUpRight className="w-4 h-4" />
+                Withdraw
+              </Button>
+              <Button variant="outline" className="w-full">
+                View All Positions
+              </Button>
             </CardContent>
           </Card>
         </motion.div>
       </motion.div>
+
+
+      {/* Dialogs */}
+      <DepositDialog
+        open={depositOpen}
+        onOpenChange={setDepositOpen}
+        onSuccess={() => {
+          setDepositOpen(false)
+        }}
+      />
+      <WithdrawalDialog
+        open={withdrawalOpen}
+        onOpenChange={setWithdrawalOpen}
+        onSuccess={() => {
+          setWithdrawalOpen(false)
+        }}
+      />
     </div>
   )
 }
