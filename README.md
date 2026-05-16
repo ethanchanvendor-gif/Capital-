@@ -11,6 +11,9 @@ A production-grade DeFi (Decentralized Finance) platform built with Next.js, Typ
 - **Portfolio Dashboard**: Real-time balance tracking and asset allocation
 - **Transaction History**: Complete deposit and withdrawal history with status tracking
 - **Staking Module**: Multiple staking plans with varying APY rates (8.5% - 32%)
+- **Live Market Prices**: Real-time crypto price ticker with 24h changes (BTC, ETH, SOL, USDC, DAI)
+- **Investment Strategies**: Pre-configured strategies (Conservative, Balanced, Aggressive, Custom)
+- **Performance Metrics**: Historical returns, capital management stats, investor growth tracking
 - **Multi-Chain Support**: Ethereum and Solana blockchain integration ready
 
 ### Design & UX
@@ -305,25 +308,68 @@ NODE_ENV=development               # Node environment
 
 ## 🚢 Deployment
 
-### Vercel (Recommended)
-```bash
-# Push to GitHub, connect to Vercel
-# Environment variables configured in Vercel dashboard
-# Auto-deploys on push
-```
+### Vercel (Recommended - Zero Config)
+1. Push code to GitHub
+2. Visit [vercel.com](https://vercel.com) and sign in with GitHub
+3. Click "New Project" and select your repository
+4. Set environment variables:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key
+   SUPABASE_SERVICE_ROLE_KEY=your-service-key
+   ```
+5. Click Deploy - auto-deploys on future pushes
 
-### Self-Hosted
+### Self-Hosted (VPS/EC2)
 ```bash
+# Clone and setup
+git clone <repository-url>
+cd capital
+npm install
+
+# Build for production
 npm run build
-npm start
-# Use PM2 for process management
+
+# Start with PM2
+npm install -g pm2
+pm2 start "npm start" --name "capital"
+pm2 save
+pm2 startup
+
+# Set environment variables
+export NEXT_PUBLIC_SUPABASE_URL=...
+export NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+export SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
-### Docker
+### Docker (Container Deployment)
 ```bash
-docker build -t capital .
-docker run -p 3000:3000 capital
+# Build image
+docker build -t capital:latest .
+
+# Run container
+docker run -p 3000:3000 \
+  -e NEXT_PUBLIC_SUPABASE_URL=your-url \
+  -e NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key \
+  -e SUPABASE_SERVICE_ROLE_KEY=your-service-key \
+  capital:latest
+
+# Push to Docker Hub
+docker tag capital:latest your-username/capital:latest
+docker push your-username/capital:latest
 ```
+
+### Production Checklist
+- [ ] Set all environment variables in production
+- [ ] Enable HTTPS/SSL certificate
+- [ ] Set up database backups
+- [ ] Configure CORS properly
+- [ ] Enable rate limiting on API routes
+- [ ] Set up monitoring/alerts
+- [ ] Configure CDN for static assets
+- [ ] Set up error tracking (Sentry recommended)
+- [ ] Enable audit logging
+- [ ] Test all authentication flows
 
 ## 🐛 Troubleshooting
 
@@ -347,10 +393,55 @@ npm run build
 - Verify RLS policies are enabled
 - Test API endpoints with Postman
 
+## 💹 Live Price Data Integration
+
+The platform includes a mock price service that can be easily integrated with real data providers.
+
+### Current Implementation (Mock Data)
+Located in `lib/price-service.ts`:
+- Supports BTC, ETH, SOL, USDC, DAI
+- Returns 24h price changes and market metrics
+- Auto-refresh every 30 seconds on PriceTicker component
+
+### Integration with Real Data Providers
+
+#### Option 1: CoinGecko API (Free)
+```typescript
+// lib/price-service.ts
+export async function getPriceData(symbol: string) {
+  const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${symbol}&vs_currencies=usd&include_24hr_change=true`)
+  return response.json()
+}
+```
+
+#### Option 2: Binance API (Free, High Speed)
+```typescript
+// Real-time market data
+const response = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}USDT`)
+```
+
+#### Option 3: Paid Services
+- **CoinMarketCap Pro**: Enterprise pricing, comprehensive data
+- **Messari**: Advanced metrics and insights
+- **Kaiko**: Professional institutional data
+
+### Updating Price Data
+1. Replace mock data in `lib/price-service.ts`
+2. Update API response parsing to match provider format
+3. Update types in `types/index.ts` if needed
+4. Test in PriceTicker component
+5. Monitor API rate limits and cost
+
+### Performance Considerations
+- Cache prices for 30-60 seconds minimum
+- Use WebSocket for real-time data if available
+- Implement fallback to cached data if API fails
+- Set up alerts for unusual price movements
+
 ## 📚 Key Files to Review
 
 **Start Here**
-- `app/page.tsx` - Landing page
+- `app/page.tsx` - Landing page with live prices
 - `app/dashboard/page.tsx` - Main dashboard
 - `.env.example` - Environment template
 
@@ -364,6 +455,10 @@ npm run build
 - `components/defi/withdrawal-dialog.tsx` - Withdrawal UI
 - `app/api/deposits/create/route.ts` - Deposit API
 - `app/api/withdrawals/create/route.ts` - Withdrawal API
+
+**Market Data**
+- `lib/price-service.ts` - Price data service
+- `components/market/price-ticker.tsx` - Live price display
 
 **Styling**
 - `app/globals.css` - Design tokens
