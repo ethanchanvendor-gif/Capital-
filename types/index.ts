@@ -15,6 +15,17 @@ export interface AuthSession {
   error: string | null
 }
 
+// Token Types
+export interface Token {
+  id: string
+  symbol: string
+  name: string
+  decimals: number
+  logo: string
+  price: number
+  change24h: number
+}
+
 // Wallet Types
 export interface WalletInfo {
   address: string

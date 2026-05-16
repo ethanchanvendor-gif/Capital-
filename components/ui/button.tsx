@@ -38,6 +38,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   loading?: boolean
+  isLoading?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

@@ -4,13 +4,15 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { TrendingUp, Wallet, PieChart, Zap, ArrowDownLeft, ArrowUpRight } from 'lucide-react'
+import { TrendingUp, Wallet, PieChart, Zap, ArrowDownLeft, ArrowUpRight, ArrowRightLeft } from 'lucide-react'
 import { DepositDialog } from '@/components/defi/deposit-dialog'
 import { WithdrawalDialog } from '@/components/defi/withdrawal-dialog'
+import { SwapDialog } from '@/components/defi/swap-dialog'
 
 export default function DashboardPage() {
   const [depositOpen, setDepositOpen] = useState(false)
   const [withdrawalOpen, setWithdrawalOpen] = useState(false)
+  const [swapOpen, setSwapOpen] = useState(false)
 
   const stats = [
     {
@@ -171,14 +173,18 @@ export default function DashboardPage() {
                 Deposit
               </Button>
               <Button
+                onClick={() => setSwapOpen(true)}
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700"
+              >
+                <ArrowRightLeft className="w-4 h-4" />
+                Swap
+              </Button>
+              <Button
                 onClick={() => setWithdrawalOpen(true)}
                 className="w-full flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-dark"
               >
                 <ArrowUpRight className="w-4 h-4" />
                 Withdraw
-              </Button>
-              <Button variant="outline" className="w-full">
-                View All Positions
               </Button>
             </CardContent>
           </Card>
@@ -192,6 +198,13 @@ export default function DashboardPage() {
         onOpenChange={setDepositOpen}
         onSuccess={() => {
           setDepositOpen(false)
+        }}
+      />
+      <SwapDialog
+        open={swapOpen}
+        onOpenChange={setSwapOpen}
+        onSuccess={() => {
+          setSwapOpen(false)
         }}
       />
       <WithdrawalDialog
