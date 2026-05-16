@@ -27,14 +27,13 @@ export interface WalletInfo {
 export interface StakingPlan {
   id: string
   name: string
-  apr: number
-  minAmount: number
-  maxAmount: number | null
-  lockupPeriod: number // in days
   description: string
-  features: string[]
-  riskLevel: 'low' | 'medium' | 'high'
-  created_at: string
+  apy: number
+  lockup_period_days: number
+  min_amount: number
+  max_amount: number | null
+  risk_level: 'low' | 'medium' | 'high'
+  features?: string[]
 }
 
 export interface StakingPosition {
