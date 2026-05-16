@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+
 import { ArrowDownLeft, Clock, CheckCircle, AlertCircle } from 'lucide-react'
 
 const depositData = [
@@ -159,7 +159,7 @@ export default function DepositsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {depositData.map((deposit, idx) => {
+              {depositData.map((deposit) => {
                 const StatusIcon = statusColors[deposit.status].icon
                 return (
                   <motion.div

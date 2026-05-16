@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { TrendingUp, Lock, Unlock, Info } from 'lucide-react'
+import { Lock, Info } from 'lucide-react'
 
 export default function StakingPage() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)

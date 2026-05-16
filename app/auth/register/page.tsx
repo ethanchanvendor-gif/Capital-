@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import toast from 'react-hot-toast'
-import { Mail, Lock, User, Loader2, Check } from 'lucide-react'
+import { Mail, Lock, User, Loader2 } from 'lucide-react'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
